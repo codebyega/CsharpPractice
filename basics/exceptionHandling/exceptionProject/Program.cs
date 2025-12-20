@@ -4,60 +4,126 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace throwException
+namespace exceptionProject
 {
     internal class Program
     {
         static void Main(string[] args)
         {
             /*
-================= TUGAS: THROW & EXCEPTION =================
+==================== REAL CASE: REGISTRASI USER ====================
 
-Tujuan:
-- Melatih penggunaan throw
-- Memahami alur try → catch
-- Menangani error buatan sendiri
+Konteks:
+Lo lagi bikin sistem registrasi user sederhana (console app).
 
-Instruksi:
-1. Minta user input UMUR
-2. Jika umur < 0
-   - lempar exception sendiri menggunakan:
-     throw new Exception("Umur tidak valid");
-3. Tangkap exception tersebut
-4. Tampilkan pesan error dari exception
-5. Program tidak boleh crash
+Aturan Bisnis:
+1. User harus input:
+   - Username
+   - Umur
+   - Password
 
-Aturan:
+2. Validasi yang WAJIB:
+   - Username TIDAK boleh kosong
+     → lempar ArgumentNullException
+   - Umur harus di antara 13 dan 60
+     → lempar ArgumentOutOfRangeException
+   - Password minimal 8 karakter
+     → lempar ArgumentException
+
+3. Tangani exception berikut:
+   - ArgumentNullException → tampilkan pesan khusus
+   - ArgumentOutOfRangeException → tampilkan pesan khusus
+   - ArgumentException → tampilkan pesan khusus
+   - Exception lain → tampilkan e.Message
+
+Aturan Teknis:
 - WAJIB pakai try
-- WAJIB pakai catch (Exception e)
-- WAJIB pakai throw
-- JANGAN langsung print pesan tanpa exception
+- WAJIB pakai throw (minimal 3 throw)
+- WAJIB pakai multiple catch
+- WAJIB urutan: spesifik → umum
+- DILARANG pakai catch kosong (catch { })
 
-============================================================
+Output jika sukses:
+"Registrasi berhasil"
+
+===================================================================
+
+Tugas:
+- Tulis kode C# lo di bawah ini
+- Jangan hapus komentar
+- Jangan minta jawaban
+- Kirim kodenya untuk direview
+
 */
+            string username, password;
             int umur = 0;
+
             try
             {
-                Console.Write("Input Umur : ");
-                umur = Convert.ToInt32(Console.ReadLine());
-                if (umur <= 0)
-                    throw new ArgumentOutOfRangeException();
-                Console.WriteLine("Umur anda adalah : " + umur);
+                username = getusername();
+                umur = getumur();
+                password = getpassword();
+                Console.WriteLine("Registrasi Berhasil!");
+
             }
-            catch (FormatException)
+            catch (ArgumentNullException ex)
             {
-                Console.WriteLine("Hanya menerima input berupa angka");
+                Console.WriteLine(ex.Message);
             }
+            catch (ArgumentOutOfRangeException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            catch (FormatException ex) 
+            { 
+                Console.WriteLine(ex.Message); 
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+          
+
             
-            catch (ArgumentOutOfRangeException)
-            {
-                Console.WriteLine("Input harus diatas angka 0");
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
+        }
+       
+        static string getusername()
+        {
+           
+                Console.Write("Input Username : ");
+                string input = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(input))
+                {
+                    throw new ArgumentNullException("username", "Username ga boleh kosong");
+                }
+                    return input;
            
         }
+        static int getumur() 
+        {
+            Console.Write("Input umur : ");
+            int input = Convert.ToInt32(Console.ReadLine());
+            if (input < 13 || input > 60)
+            {
+                throw new ArgumentOutOfRangeException("umur", "Umur harus di antara 13 dan 60");
+            }
+                return input;
+        }
+
+        static string getpassword()
+        {
+            Console.Write("input Password : ");
+            string input = Console.ReadLine();
+
+            if (input.Length < 8 || string.IsNullOrEmpty(input))
+            {
+                throw new ArgumentException("Password minimal 8 karakter dan ga boleh kosong", "password");
+            }
+                return input;
+        }   
     }
 }
